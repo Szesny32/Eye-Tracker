@@ -25,14 +25,15 @@ CV_IMAGE = None
 
 def switch_mode(mode):
     global MODE, LEFT, RIGHT
-    MODE = mode
-    LEFT = (-1, -1)
-    RIGHT = (-1, -1)
+    if(mode != MODE):
+        MODE = mode
+        LEFT = (-1, -1)
+        RIGHT = (-1, -1)
 
-    if(MODE == 'NORMAL'):
-        normal_mode()
-    if(MODE == 'REGISTER'):
-        register_mode()
+        if(MODE == 'NORMAL'):
+            normal_mode()
+        if(MODE == 'REGISTER'):
+            register_mode()
 
 for i, mode in enumerate(MODES):
     BUTTON = tk.Button(BUTTON_FRAME, text=mode, command=lambda mode = mode: switch_mode(mode), width=10, height=2)
@@ -128,28 +129,6 @@ ROOT.bind("<Button-3>", RMB)
 ROOT.bind("<Return>", ENTER)
 
 
-
-
-
-
-
-switch_mode(MODE)
+normal_mode()
 ROOT.mainloop()
 
-
-
-
-
-
-
-
-
-
-
-# image = cv.imread(image_path)
-# image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-# image = cv.resize(image, IMAGE_FRAME)
-# image = Image.fromarray(image)
-
-# #image = image.resize(IMAGE_FRAME,  Image.Resampling.NEAREST)  # Dopasuj rozmiar obrazka
-# photo = ImageTk.PhotoImage(image)
