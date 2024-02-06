@@ -121,7 +121,27 @@ def RMB(event):
     if(MODE == 'REGISTER'):
         RIGHT = getMouseXY()
 def ENTER(event):
-    print("enter")
+    global MODE, LEFT, RIGHT
+    if(MODE == 'REGISTER' and LEFT != (-1, -1) and RIGHT != (-1, -1)):
+        newsize = 256.0 
+        height, width = CV_IMAGE.shape[:2]
+        x_scale = newsize/ width
+        y_scale = newsize / height
+        img = cv.resize(CV_IMAGE, (int(newsize), int(newsize)))
+        img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+        left_x, left_y = round(LEFT[0] * x_scale, 2), round(LEFT[1] * y_scale, 2)
+        right_x, right_y = round(RIGHT[0]  * x_scale, 2), round(RIGHT[1] * y_scale, 2)
+
+        filename = f'dataset/{left_x:.2f}_{left_y:.2f}_{right_x:.2f}_{right_y:.2f}.jpg'
+
+        print(f'Saved in: {filename}')
+
+        cv.imwrite(filename, img)
+        switch_mode('NORMAL')
+            
+    elif(MODE =='NORMAL'):
+        switch_mode('REGISTER')
+
 
 
 ROOT.bind("<Button-1>", LMB)
