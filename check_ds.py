@@ -43,7 +43,7 @@ def chunks(lst, n):
         yield lst[i:i + n]
 
 
-samples, labels, names = load_data('dataset')
+samples, labels, names = load_data('dataset/s4')
 
 
 for chunk_samples, chunk_labels, chunk_names in zip(chunks(samples, 25), chunks(labels, 25), chunks(names, 25)):

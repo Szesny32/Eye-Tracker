@@ -14,45 +14,48 @@ def load_data(data_directory):
     # Listy przechowujące obrazy i etykiety
     samples = []
     labels = []
+    names = []
     
     # Przechodzenie przez pliki w katalogu
-    for filename in os.listdir(data_directory):
-        if filename.endswith('.jpg'):
-            # Pobranie etykiet z nazwy pliku
-            parts = filename[:-4].split('_')
-            left_x, left_y, right_x, right_y = map(float, parts[1:])
-            
-            # Wczytanie obrazu
-            image_path = os.path.join(data_directory, filename)
-            image = cv.imread(image_path)
-            image = cv.cvtColor(image, cv.COLOR_BGR2RGB)  
-            # Normalizacja obrazu (opcjonalne)
-            image = image / 255.0
-            
-            # Dodanie obrazu i etykiety do list
-            samples.append(image)
-            labels.append([left_x, left_y, right_x, right_y])
+    for root, dirs, files in os.walk(data_directory):
+        for filename in files:
+            if filename.endswith('.jpg'):
+                # Pobranie etykiet z nazwy pliku
+                parts = filename[:-4].split('_')
+                left_x, left_y, right_x, right_y = map(float, parts[1:])
+                
+                # Wczytanie obrazu
+                image_path = os.path.join(root, filename)
+                image = cv.imread(image_path)
+                image = cv.cvtColor(image, cv.COLOR_BGR2RGB)  
+                # Normalizacja obrazu (opcjonalne)
+                image = image / 255.0
+                
+                # Dodanie obrazu i etykiety do list
+                samples.append(image)
+                labels.append([left_x, left_y, right_x, right_y])
+                names.append(image_path)
     
     # Konwersja list na tablice numpy
     samples = np.array(samples)
     labels = np.array(labels)
     print(len(samples), labels[0])
-    return samples, labels
+    return samples, labels, names
 
-samples, labels = load_data('dataset')
+samples, labels, _ = load_data('dataset/s4')
 (trainSamples, testSamples, trainLabels, testLabels) = train_test_split(samples, labels, random_state=32, train_size = 0.75)
 
-random_indices = random.sample(range(len(testSamples)), 16)  # Zmiana na 16, aby wyświetlić 4 kolumny i 4 rzędy
+random_indices = random.sample(range(len(testSamples)), 25)  # Zmiana na 16, aby wyświetlić 4 kolumny i 4 rzędy
 
 model = load_model('model.h5')
 # Przewidywanie punktów na wybranych obrazkach
 predicted_points = model.predict(testSamples[random_indices])
 
-fig, axes = plt.subplots(4, 4, figsize=(16, 16))
+fig, axes = plt.subplots(5, 5, figsize=(16, 16))
 
 for i, idx in enumerate(random_indices):
-    row = i // 4
-    col = i % 4
+    row = i // 5
+    col = i % 5
     
     axes[row, col].imshow(testSamples[idx])
     
